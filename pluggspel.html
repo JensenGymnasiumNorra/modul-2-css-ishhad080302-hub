@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS & HTML Quiz - Svårt</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f4f8; color: #333; padding: 20px; }
+  .quiz-container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1);}
+  h1 { text-align: center; color: #007ACC; }
+  .question { margin-bottom: 20px; font-weight: bold; }
+  input[type="text"] { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #007ACC; border-radius: 8px; margin-bottom: 10px;}
+  button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 8px; background: #007ACC; color: white; cursor: pointer;}
+  .feedback { margin-top: 10px; padding: 10px; border-radius: 8px; display: none; }
+  .correct { background: #d4edda; color: #155724; }
+  .wrong { background: #f8d7da; color: #721c24; }
+  #score { font-size: 18px; text-align: center; margin-top: 20px; color: #007ACC; }
+</style>
+</head>
+<body>
+<div class="quiz-container">
+  <h1>CSS & HTML Quiz - Svårt</h1>
+  <div id="quiz"></div>
+  <button onclick="checkAnswer()">Svara</button>
+  <button onclick="nextQuestion()" id="nextBtn" style="display:none;">Nästa fråga</button>
+  <div id="score"></div>
+</div>
+
+<script>
+const quizData = [
+  { question: "Vad är ett semantiskt element?", answer: "ett element som beskriver sitt innehålls betydelse", explanation: "Semantiska element beskriver innehållets betydelse, t.ex. <header>, <article>, <footer>." },
+  { question: "Vad står CSS för?", answer: "cascading style sheets", explanation: "CSS står för Cascading Style Sheets." },
+  { question: "Varför använder vi CSS?", answer: "för att styla html och ändra layout", explanation: "CSS används för att styla HTML och ändra layout." },
+  { question: "Skillnaden på inline, internal och external CSS? Vilken rekommenderas?", answer: "inline = direkt på element, internal = i style tag, external = separat fil; external rekommenderas", explanation: "External CSS rekommenderas för bättre struktur och återanvändning." },
+  { question: "Exempel på selector, property och value.", answer: "h1 color red", explanation: "Exempel: `h1 { color: red; }` där h1 är selector, color är property och red är value." },
+  { question: "Skillnaden på body{ }, .body{ } och #body{ }", answer: "body = element, .body = class, #body = id", explanation: "`body` riktar sig mot element, `.body` mot class, `#body` mot id." },
+  { question: "Vilken prioritet har body{ }, .body{ } och #body{ }?", answer: "body < .body < #body", explanation: "ID har högst prioritet, sedan class, sedan element." },
+  { question: "Selectors – vad betyder det?", answer: "ett sätt att välja vilket element css ska styla", explanation: "Selectors väljer vilka element CSS ska påverka." },
+  { question: "A B (t.ex. div p), A, B (t.ex. div, p)", answer: "a b = b inuti a, a, b = båda separata element", explanation: "`A B` betyder B inuti A, `A, B` betyder både A och B." },
+  { question: "Font – font-family, font-size, font-weight", answer: "family = typ av font, size = storlek, weight = tjocklek", explanation: "Font-family anger fonttyp, font-size storlek, font-weight tjocklek." },
+  { question: "CSS-box-modellen – padding, border, margin", answer: "padding = inre avstånd, border = kantlinje, margin = yttre avstånd", explanation: "Padding = mellan innehåll och kant, Border = kant, Margin = mellan element." },
+  { question: "Position – static, relative, absolute, fixed, sticky", answer: "olika sätt att positionera element på sidan", explanation: "Positionering styr hur element placeras på sidan." },
+  { question: "Vad är flexbox?", answer: "ett layoutsystem för att arrangera element i rad eller kolumn", explanation: "Flexbox används för flexibel layout i CSS." },
+  { question: "Vad är grid?", answer: "ett layoutsystem med rader och kolumner", explanation: "Grid används för att skapa layout med rader och kolumner." },
+  { question: "Vad är hover? t.ex. a:hover", answer: "css-effekt som triggas när man hovrar musen över element", explanation: "`:hover` används för att ändra stil när musen är över elementet." },
+  { question: "På vilka olika sätt kan du ändra färg med CSS?", answer: "namngivna färger hex rgb rgba hsl", explanation: "Färg kan anges med namn, hex, rgb, rgba och hsl." }
+];
+
+// Slumpa ordningen
+quizData.sort(() => Math.random() - 0.5);
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion() {
+  const q = quizData[currentQuestion];
+  document.getElementById('quiz').innerHTML = `<div class="question">${q.question}</div>
+                                                <input type="text" id="answerInput" placeholder="Skriv ditt svar här...">
+                                                <div id="feedback" class="feedback"></div>`;
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function checkAnswer() {
+  const q = quizData[currentQuestion];
+  const userAnswer = document.getElementById('answerInput').value.toLowerCase().trim();
+  const feedback = document.getElementById('feedback');
+
+  if(userAnswer === "") return alert("Skriv något innan du svarar!");
+
+  if(userAnswer === q.answer.toLowerCase()) {
+    feedback.className = "feedback correct";
+    feedback.textContent = "Rätt! " + q.explanation;
+    score++;
+  } else {
+    feedback.className = "feedback wrong";
+    feedback.textContent = "Fel! " + q.explanation + ` (Ditt svar: "${userAnswer}")`;
+  }
+  document.getElementById('score').textContent = `Poäng: ${score} / ${quizData.length}`;
+  document.getElementById('nextBtn').style.display = 'inline';
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if(currentQuestion < quizData.length) {
+    loadQuestion();
+  } else {
+    document.getElementById('quiz').innerHTML = `<h2>Quiz klart!</h2><p>Din slutpoäng: ${score} / ${quizData.length}</p>`;
+    document.getElementById('nextBtn').style.display = 'none';
+  }
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
